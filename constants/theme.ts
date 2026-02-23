@@ -5,25 +5,32 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Hydra brand: hsl(0, 84%, 54%) = #E81B1B
+const hydraPrimary = '#E81B1B';
+const tintColorLight = hydraPrimary;
+const tintColorDark = hydraPrimary;
 
 export const Colors = {
+  primary: hydraPrimary,
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#171717',
+    background: '#FBF0F0',
+    card: '#FFFFFF',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    border: '#E8D4D4',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F5E0E0',
+    background: '#1A1010',
+    card: '#241616',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    border: '#3D2828',
   },
 };
 

@@ -1,3 +1,3 @@
-import PingScreen from "@/src/screens/PingScreen";
+import DeliveriesScreen from "@/src/screens/DeliveriesScreen";
 
-export default PingScreen;
+export default DeliveriesScreen;
