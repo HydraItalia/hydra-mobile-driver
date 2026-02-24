@@ -25,6 +25,7 @@ export default function AuthScreen() {
         const data = await exchangeToken(token);
         if (cancelled) return;
         await signIn(data);
+        if (cancelled) return;
         router.replace("/(tabs)");
       } catch {
         if (!cancelled) {

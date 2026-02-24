@@ -20,7 +20,6 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(tabs)' || segments[0] === 'delivery';
-    const onAuthScreen = segments[0] === 'auth';
 
     if (!isAuthenticated && inAuthGroup) {
       router.replace('/login');
@@ -31,6 +30,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, isLoading, segments, router]);
 
   if (isLoading) return null;
+
+  const pendingRedirect = !isAuthenticated && (segments[0] === '(tabs)' || segments[0] === 'delivery');
+  if (pendingRedirect) return null;
 
   return <>{children}</>;
 }

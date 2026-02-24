@@ -11,6 +11,7 @@ import {
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { requestMagicLink } from "@/src/api/auth";
 
 export default function LoginScreen() {
@@ -19,9 +20,13 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const inputBg = useThemeColor({}, "card");
+  const inputText = useThemeColor({}, "text");
+  const inputBorder = useThemeColor({}, "border");
+
   async function handleSubmit() {
     const trimmed = email.trim().toLowerCase();
-    if (!trimmed || !trimmed.includes("@")) {
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setError("Please enter a valid email address");
       return;
     }
@@ -30,8 +35,12 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      await requestMagicLink(trimmed);
-      router.push({ pathname: "/check-email", params: { email: trimmed } });
+      const res = await requestMagicLink(trimmed);
+      if (res.ok) {
+        router.push({ pathname: "/check-email", params: { email: trimmed } });
+      } else {
+        setError("Unable to send link. Please try again.");
+      }
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -54,7 +63,10 @@ export default function LoginScreen() {
 
         <View style={styles.form}>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              { backgroundColor: inputBg, color: inputText, borderColor: inputBorder },
+            ]}
             placeholder="driver@example.com"
             placeholderTextColor="#a1a1aa"
             keyboardType="email-address"
@@ -111,12 +123,9 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: "#E8D4D4",
     borderRadius: 10,
     paddingHorizontal: 16,
     fontSize: 16,
-    backgroundColor: "#fff",
-    color: "#171717",
   },
   error: {
     color: "#dc2626",

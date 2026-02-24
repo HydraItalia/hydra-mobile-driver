@@ -8,6 +8,12 @@ import {
   clearTokens,
 } from "@/src/auth/storage";
 
+// ── Auth failure callback ───────────────────────────────────────────────────
+export let onAuthFailure: (() => void) | null = null;
+export function setOnAuthFailure(fn: (() => void) | null) {
+  onAuthFailure = fn;
+}
+
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -55,22 +61,25 @@ apiClient.interceptors.response.use(
     // Coalesce concurrent refresh attempts
     if (!refreshPromise) {
       refreshPromise = (async () => {
-        const refresh = await getRefreshToken();
-        if (!refresh) return null;
-
         try {
+          const refresh = await getRefreshToken();
+          if (!refresh) return null;
+
           // Use raw axios to avoid circular dependency with api/auth.ts
           const { data } = await axios.post<{
             accessToken: string;
             refreshToken: string;
-          }>(`${API_BASE_URL}/api/mobile/auth/refresh`, {
-            refreshToken: refresh,
-          });
+          }>(
+            `${API_BASE_URL}/api/mobile/auth/refresh`,
+            { refreshToken: refresh },
+            { timeout: 10000 },
+          );
           await setAccessToken(data.accessToken);
           await setRefreshToken(data.refreshToken);
           return data.accessToken;
         } catch {
           await clearTokens();
+          onAuthFailure?.();
           return null;
         } finally {
           refreshPromise = null;

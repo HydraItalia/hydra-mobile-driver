@@ -8,11 +8,14 @@ import {
 } from "react";
 import type { DriverProfile, ExchangeResponse } from "@/src/api/auth";
 import { logoutRemote } from "@/src/api/auth";
+import { setOnAuthFailure } from "@/src/api/client";
 import {
   clearTokens,
   getAccessToken,
+  getDriver,
   getRefreshToken,
   setAccessToken,
+  setDriver as persistDriver,
   setRefreshToken,
 } from "@/src/auth/storage";
 
@@ -31,12 +34,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [driver, setDriver] = useState<DriverProfile | null>(null);
 
-  // On mount: check for existing tokens
+  // On mount: check for existing tokens and restore driver profile
   useEffect(() => {
     (async () => {
       try {
         const token = await getAccessToken();
         if (token) {
+          const storedDriver = await getDriver();
+          setDriver(storedDriver);
           setIsAuthenticated(true);
         }
       } finally {
@@ -45,9 +50,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
+  // Register auth failure callback so token-refresh failures reset in-memory state
+  useEffect(() => {
+    setOnAuthFailure(() => {
+      clearTokens();
+      setDriver(null);
+      setIsAuthenticated(false);
+    });
+    return () => setOnAuthFailure(null);
+  }, []);
+
   const signIn = useCallback(async (data: ExchangeResponse) => {
     await setAccessToken(data.accessToken);
     await setRefreshToken(data.refreshToken);
+    await persistDriver(data.driver);
     setDriver(data.driver);
     setIsAuthenticated(true);
   }, []);

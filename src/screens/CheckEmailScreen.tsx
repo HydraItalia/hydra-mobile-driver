@@ -10,13 +10,17 @@ export default function CheckEmailScreen() {
   const router = useRouter();
   const [resent, setResent] = useState(false);
   const [resending, setResending] = useState(false);
+  const [resendError, setResendError] = useState<string | null>(null);
 
   async function handleResend() {
     if (!email || resending) return;
     setResending(true);
+    setResendError(null);
     try {
       await requestMagicLink(email);
       setResent(true);
+    } catch {
+      setResendError("Failed to resend link. Please try again.");
     } finally {
       setResending(false);
     }
@@ -52,6 +56,10 @@ export default function CheckEmailScreen() {
                   : "Resend link"}
             </ThemedText>
           </Pressable>
+
+          {resendError && (
+            <ThemedText style={styles.resendError}>{resendError}</ThemedText>
+          )}
 
           <Pressable onPress={() => router.back()}>
             <ThemedText style={styles.backText}>
@@ -103,6 +111,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 15,
+  },
+  resendError: {
+    color: "#dc2626",
+    fontSize: 14,
+    textAlign: "center",
   },
   backText: {
     color: "#E81B1B",
