@@ -26,9 +26,7 @@ export async function requestMagicLink(
   return res.data;
 }
 
-export async function exchangeToken(
-  token: string,
-): Promise<ExchangeResponse> {
+export async function exchangeToken(token: string): Promise<ExchangeResponse> {
   const res = await apiClient.post<ExchangeResponse>(
     "/api/mobile/auth/exchange",
     { token },
@@ -39,10 +37,9 @@ export async function exchangeToken(
 export async function refreshAccessToken(
   refreshToken: string,
 ): Promise<AuthTokens> {
-  const res = await apiClient.post<AuthTokens>(
-    "/api/mobile/auth/refresh",
-    { refreshToken },
-  );
+  const res = await apiClient.post<AuthTokens>("/api/mobile/auth/refresh", {
+    refreshToken,
+  });
   return res.data;
 }
 

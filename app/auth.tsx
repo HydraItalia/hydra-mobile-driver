@@ -29,7 +29,9 @@ export default function AuthScreen() {
         router.replace("/(tabs)");
       } catch {
         if (!cancelled) {
-          setError("This link is invalid or has expired. Please request a new one.");
+          setError(
+            "This link is invalid or has expired. Please request a new one.",
+          );
         }
       }
     })();

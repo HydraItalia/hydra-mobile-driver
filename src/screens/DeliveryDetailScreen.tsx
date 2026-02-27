@@ -60,8 +60,7 @@ export default function DeliveryDetailScreen() {
             style={[
               styles.badge,
               {
-                backgroundColor:
-                  STATUS_COLORS[delivery.status] ?? "#6b7280",
+                backgroundColor: STATUS_COLORS[delivery.status] ?? "#6b7280",
               },
             ]}
           >
@@ -81,9 +80,7 @@ export default function DeliveryDetailScreen() {
         {address ? (
           <Pressable
             onPress={() =>
-              Linking.openURL(
-                `maps:?q=${encodeURIComponent(address)}`,
-              )
+              Linking.openURL(`maps:?q=${encodeURIComponent(address)}`)
             }
           >
             <ThemedText style={styles.address}>{address}</ThemedText>
@@ -91,9 +88,7 @@ export default function DeliveryDetailScreen() {
         ) : null}
 
         {delivery.phone ? (
-          <Pressable
-            onPress={() => Linking.openURL(`tel:${delivery.phone}`)}
-          >
+          <Pressable onPress={() => Linking.openURL(`tel:${delivery.phone}`)}>
             <ThemedText style={styles.phone}>{delivery.phone}</ThemedText>
           </Pressable>
         ) : null}

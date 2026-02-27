@@ -65,7 +65,11 @@ export default function LoginScreen() {
           <TextInput
             style={[
               styles.input,
-              { backgroundColor: inputBg, color: inputText, borderColor: inputBorder },
+              {
+                backgroundColor: inputBg,
+                color: inputText,
+                borderColor: inputBorder,
+              },
             ]}
             placeholder="driver@example.com"
             placeholderTextColor="#a1a1aa"

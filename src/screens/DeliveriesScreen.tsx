@@ -57,7 +57,9 @@ function DeliveryCard({
         {delivery.orderNumber} — {delivery.itemCount} item
         {delivery.itemCount !== 1 ? "s" : ""}
       </ThemedText>
-      <ThemedText style={styles.cardSubtext}>{delivery.addressLine1}</ThemedText>
+      <ThemedText style={styles.cardSubtext}>
+        {delivery.addressLine1}
+      </ThemedText>
       <ThemedText style={styles.cardTime}>{time}</ThemedText>
     </Pressable>
   );
